@@ -19,10 +19,14 @@ exports.requestReset = async (req, res) => {
     //console.log(`📩 Simulated email: http://localhost:5500/frontend/reset.html?token=${token}`);
     //res.json({ msg: "Reset link generated. Check console log for link." });
     // Build reset link from CLIENT_URL (set this in .env)
-    const clientBase = process.env.CLIENT_URL || "http://127.0.0.1:5500/password-reset/frontend";
-    const resetLink = `${clientBase}/reset.html?token=${token}`;
+    // ...existing code...
+    // Build reset link from CLIENT_URL (set this in .env)
+    const clientBase = process.env.CLIENT_URL || "http://localhost:5173";
+    // APP ROUTE (query param), not a source file path
+    const resetLink = `${clientBase}/reset-password/${token}`;
     console.log(`📩 Simulated email: ${resetLink}`);
     res.json({ msg: "Reset link generated. Check console log for link." });
+// ...existing code...
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -31,6 +35,8 @@ exports.requestReset = async (req, res) => {
 // Reset password
 exports.resetPassword = async (req, res) => {
   const { token, password } = req.body;
+  //debug line
+  console.log("Resetting password with token:", token);
   try {
     const user = await User.findOne({
       resetToken: token,
