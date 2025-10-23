@@ -21,7 +21,8 @@ exports.requestReset = async (req, res) => {
     // Build reset link from CLIENT_URL (set this in .env)
     // ...existing code...
     // Build reset link from CLIENT_URL (set this in .env)
-    const clientBase = process.env.CLIENT_URL || "http://localhost:5173";
+    //const clientBase = process.env.CLIENT_URL || "http://localhost:5173";
+    const clientBase = process.env.CLIENT_URL || "https://password-reset-dixq.onrender.com";
     // APP ROUTE (query param), not a source file path
     const resetLink = `${clientBase}/reset-password/${token}`;
     console.log(`📩 Simulated email: ${resetLink}`);
