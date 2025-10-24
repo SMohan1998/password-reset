@@ -19,6 +19,7 @@ Technologies used
 - Express.js
 - MongoDB Atlas
 - Bootstrap
+- React.js
 
 
          
