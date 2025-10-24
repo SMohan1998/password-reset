@@ -8,7 +8,7 @@ function ResetPassword() {
   const [confirm, setConfirm] = useState("");
   const [message, setMessage] = useState("");
 
-  const API = import.meta.env.VITE_API_BASE || "http://localhost:5000/api"
+  const API = import.meta.env.VITE_API_BASE || "https://password-reset-dixq.onrender.com/api"
   const handleSubmit = async (e) => {
     e.preventDefault();
 
