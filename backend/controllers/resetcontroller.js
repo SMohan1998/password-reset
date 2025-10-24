@@ -22,7 +22,7 @@ exports.requestReset = async (req, res) => {
     // ...existing code...
     // Build reset link from CLIENT_URL (set this in .env)
     //const clientBase = process.env.CLIENT_URL || "http://localhost:5173";
-    const clientBase = process.env.CLIENT_URL || "https://password-reset-dixq.onrender.com";
+    const clientBase = process.env.CLIENT_URL || "https://pwd-reset.netlify.app";
     // APP ROUTE (query param), not a source file path
     const resetLink = `${clientBase}/reset-password/${token}`;
     console.log(`📩 Simulated email: ${resetLink}`);
