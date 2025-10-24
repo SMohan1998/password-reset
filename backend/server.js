@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const allowerdOrigins = [process.env.CLIENT_URL || "https://pwd-reset.netlify.app"];
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const path = require("path");
@@ -10,7 +11,10 @@ dotenv.config();
 const app = express();
 connectDB();
 
-app.use(cors());
+app.use(cors({
+  origin: allowerdOrigins,
+  credentials: true,
+}));
 app.use(bodyParser.json());
 // Serve frontend static files at /frontend
 app.use('/frontend', express.static(path.join(__dirname, 'frontend')));

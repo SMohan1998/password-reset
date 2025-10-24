@@ -9,7 +9,9 @@ function RequestReset() {
     setMessage("Processing...");
 
     try {
-      const response = await fetch("http://localhost:5000/api/request-reset", {
+      //const response = await fetch("http://localhost:5000/api/request-reset", {
+      const API = import.meta.env.VITE_API_BASE || "https://password-reset-dixq.onrender.com/api";
+      const response = await fetch(`${API}/request-reset`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
