@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const allowerdOrigins = [process.env.CLIENT_URL || "https://pwd-reset.netlify.app"];
+const allowedOrigins = [process.env.CLIENT_URL || "https://pwd-reset.netlify.app"];
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const path = require("path");
@@ -12,7 +12,7 @@ const app = express();
 connectDB();
 
 app.use(cors({
-  origin: allowerdOrigins,
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(bodyParser.json());
