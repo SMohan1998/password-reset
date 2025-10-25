@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function Register() {
@@ -7,7 +6,7 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
+
 
   const API = import.meta.env.VITE_API_BASE || "https://password-reset-dixq.onrender.com/api";
 
@@ -25,7 +24,6 @@ function Register() {
       const data = await response.json();
       if (response.ok) {
         setMessage("Registration successful! Please login.");
-        navigate("/login");
       } else {
         setMessage(data.message || "Registration failed.");
       }
