@@ -25,8 +25,7 @@ function Login() {
       } else {
         setMessage(data.message || "Login failed.");
       }
-    } catch (err) {
-        console.error(err);
+    } catch {
       setMessage("Server error.");
     }
   };

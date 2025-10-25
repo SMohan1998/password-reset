@@ -36,8 +36,7 @@ function ResetPassword() {
       } else {
         setMessage(data.msg || data.message || "Invalid or expired token");
       }
-    } catch (err) {
-      console.error(err);
+    } catch  {
       setMessage("Server error");
     }
   };

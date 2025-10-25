@@ -25,8 +25,7 @@ function Register() {
       } else {
         setMessage(data.message || "Registration failed.");
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
       setMessage("Server error.");
     }
   };

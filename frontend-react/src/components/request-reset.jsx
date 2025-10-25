@@ -23,8 +23,7 @@ function RequestReset() {
       } else {
         setMessage(data.message || "Something went wrong.");
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
       setMessage("Server connection failed.");
     }
   };
