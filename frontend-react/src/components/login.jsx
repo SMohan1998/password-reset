@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -52,7 +53,9 @@ function Login() {
         />
         <button className="btn btn-success w-100">Login</button>
       </form>
-      {message && <p className="text-center mt-3">{message}</p>}
+      {message && <p className="text-center mt-3">{message}
+        <Link to="/request-reset">Forgot Password?</Link>
+      </p>}
     </div>
   );
 }
