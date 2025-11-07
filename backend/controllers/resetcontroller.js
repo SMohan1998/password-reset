@@ -1,3 +1,4 @@
+const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
 const User = require("../models/user");
 
@@ -25,12 +26,36 @@ exports.requestReset = async (req, res) => {
     const clientBase = process.env.CLIENT_URL || "https://pwd-reset.netlify.app";
     // APP ROUTE (query param), not a source file path
     const resetLink = `${clientBase}/reset-password/${token}`;
-    console.log(`📩 Simulated email: ${resetLink}`);
-    res.json({ msg: "Reset link generated. Check console log for link." });
-// ...existing code...
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_ADDRESS,
+        pass: process.env.EMAIL_PASSWORD
+      }
+    });
+    const mailOptions = {
+      from: process.env.EMAIL_ADDRESS,
+      to: user.email,
+      subject: "Password Reset Request",
+      text: `You requested a password reset. Click this link to reset your password: ${resetLink} 
+      If you didn't request this, please ignore this email.`,
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log("Error sending email:", error);
+        return res.status(500).json({ msg: "Error sending email" });
+      } else {
+        console.log("Email sent: " + info.response);
+        return res.json({ msg: "Reset link sent to email." });
+      }
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+
+    //console.log(`📩 Simulated email: ${resetLink}`);
+   // res.json({ msg: "Reset link generated. Check console log for link." });
+// ...existing code...
 };
 
 // Reset password
