@@ -1,4 +1,6 @@
-const nodemailer = require("nodemailer");
+//const nodemailer = require("nodemailer");
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const { v4: uuidv4 } = require("uuid");
 const User = require("../models/user");
 
@@ -26,7 +28,7 @@ exports.requestReset = async (req, res) => {
     const clientBase = process.env.CLIENT_URL || "https://pwd-reset.netlify.app";
     // APP ROUTE (query param), not a source file path
     const resetLink = `${clientBase}/reset-password/${token}`;
-    const transporter = nodemailer.createTransport({
+    /*const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
       secure: true,
@@ -58,7 +60,24 @@ exports.requestReset = async (req, res) => {
     //console.log(`📩 Simulated email: ${resetLink}`);
    // res.json({ msg: "Reset link generated. Check console log for link." });
 // ...existing code...
-};
+};*/
+
+async function sendResetEmail(user) {
+  const msg = {
+    to:user.email,
+    from: process.env.EMAIL_FROM,
+    subject: "Password Reset Request",
+    text: `Click this link to reset your password: ${resetLink} 
+      If you didn't request this, please ignore this email.`,
+  };
+  try {
+    await sgMail.send(msg);
+    console.log("Password reset email sent to:", user.email);
+  } catch (error) {
+    console.error("Error sending password reset email:", error);
+    throw error;
+  }
+}
 
 // Reset password
 exports.resetPassword = async (req, res) => {
