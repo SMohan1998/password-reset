@@ -1,5 +1,5 @@
-//const nodemailer = require("nodemailer");
-const sgMail = require('@sendgrid/mail');
+const nodemailer = require("nodemailer");
+//const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const { v4: uuidv4 } = require("uuid");
 const User = require("../models/user");
@@ -28,10 +28,10 @@ exports.requestReset = async (req, res) => {
     const clientBase = process.env.CLIENT_URL || "https://pwd-reset.netlify.app";
     // APP ROUTE (query param), not a source file path
     const resetLink = `${clientBase}/reset-password/${token}`;
-    /*const transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
-      secure: true,
+      secure: false,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -60,9 +60,9 @@ exports.requestReset = async (req, res) => {
     //console.log(`📩 Simulated email: ${resetLink}`);
    // res.json({ msg: "Reset link generated. Check console log for link." });
 // ...existing code...
-};*/
+};
 
-async function sendResetEmail(user) {
+/*async function sendResetEmail(user, resetLink) {
   const msg = {
     to:user.email,
     from: process.env.EMAIL_FROM,
@@ -77,7 +77,7 @@ async function sendResetEmail(user) {
     console.error("Error sending password reset email:", error);
     throw error;
   }
-}
+}*/
 
 // Reset password
 exports.resetPassword = async (req, res) => {
