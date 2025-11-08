@@ -44,15 +44,27 @@ exports.requestReset = async (req, res) => {
       text: `You requested a password reset. Click this link to reset your password: ${resetLink} 
       If you didn't request this, please ignore this email.`,
     };
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log("Error sending email:", error);
-        return res.status(500).json({ msg: "Error sending email" });
-      } else {
-        console.log("Email sent: " + info.response);
-        return res.json({ msg: "Reset link sent to email." });
-      }
-    });
+    try{
+      await transporter.verify()
+    }
+    catch(verifyErr){
+      console.error("SMTP verify failed", verifyErr);
+       console.log("Fallback reset link:", resetLink);
+      return res.status(202).json({
+        msg: "Reset link generated but email delivery failed. Check server console for the link.",
+      });
+    }
+try {
+  const info = await transporter.sendMail(mailOptions);
+  console.log("Email sent:", info.response || info.messageId);
+  return res.json({ msg: "Reset link sent to email." });
+} catch (sendErr) {
+  console.error("Error sending email:", sendErr);
+  console.log("Fallback reset link:", resetLink);
+  return res.status(202).json({
+    msg: "Reset link generated but email delivery failed. Check server console for the link.",
+  });
+}
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
