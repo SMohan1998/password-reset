@@ -27,11 +27,11 @@ exports.requestReset = async (req, res) => {
     // APP ROUTE (query param), not a source file path
     const resetLink = `${clientBase}/reset-password/${token}`;
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
         user: process.env.EMAIL_ADDRESS,
-        pass: process.env.EMAIL_PASSWORD
-      }
+        pass: process.env.EMAIL_PASSWORD,
+      },
     });
     const mailOptions = {
       from: process.env.EMAIL_ADDRESS,
