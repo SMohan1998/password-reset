@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 //const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+//sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const { v4: uuidv4 } = require("uuid");
 const User = require("../models/user");
 
