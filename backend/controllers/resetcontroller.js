@@ -6,7 +6,7 @@ const axios = require("axios");
 async function sendBrevoEmail(recipient, subject, textContent, htmlContent) {
   const apiKey = process.env.BREVO_API_KEY;
   await axios.post('https://api.brevo.com/v3/smtp/email', {
-    sender: { name: "Password Reset", email: process.env.EMAIL_FROM },
+    sender: { name: "Brevo", email: process.env.EMAIL_FROM },
     to: [{ email: recipient }],
     subject: subject,
     textContent: textContent,
@@ -37,10 +37,14 @@ exports.requestReset = async (req, res) => {
     const clientBase = process.env.CLIENT_URL || "https://pwd-reset.netlify.app";
     // APP ROUTE (query param), not a source file path
     const resetLink = `${clientBase}/reset-password/${token}`;
+    const emailSubject = "Password Reset Request";
+    const emailText = `You requested a password reset. Click this link to reset your password: ${resetLink}\nIf you didn't request this, please ignore this email.`;
+    const emailHtml = `<p>You requested a password reset. Click this link to reset your password:</p><a href="${resetLink}">this link</a><br>
+    <p>If you didn't request this, please ignore this email.</p>`;
+
     try{
       //send password reset email via Brevo
-      await sendBrevoEmail(user.email, "Password Reset Request", `You requested a password reset. Click this link to reset your password: ${resetLink}`,
-        `<p>If you didn't request this, please ignore this email.</p>`);
+      await sendBrevoEmail(user.email, emailSubject, emailText, emailHtml); 
         return res.json({ msg: "Reset link sent to email." });
     }
     catch(verifyErr){
