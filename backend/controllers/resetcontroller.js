@@ -1,6 +1,3 @@
-//const nodemailer = require("nodemailer");
-//const sgMail = require('@sendgrid/mail');
-//sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const { v4: uuidv4 } = require("uuid");
 const User = require("../models/user");
 const axios = require("axios");
@@ -37,32 +34,9 @@ exports.requestReset = async (req, res) => {
     user.resetTokenExpiry = Date.now() + 10 * 60 * 1000;
     await user.save();
 
-    //console.log(`📩 Simulated email: http://localhost:5500/frontend/reset.html?token=${token}`);
-    //res.json({ msg: "Reset link generated. Check console log for link." });
-    // Build reset link from CLIENT_URL (set this in .env)
-    // ...existing code...
-    // Build reset link from CLIENT_URL (set this in .env)
-    //const clientBase = process.env.CLIENT_URL || "http://localhost:5173";
     const clientBase = process.env.CLIENT_URL || "https://pwd-reset.netlify.app";
     // APP ROUTE (query param), not a source file path
     const resetLink = `${clientBase}/reset-password/${token}`;
-    /*const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-    const mailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: user.email,
-      subject: "Password Reset Request",
-      text: `You requested a password reset. Click this link to reset your password: ${resetLink} 
-      If you didn't request this, please ignore this email.`,
-    };
-    */
     try{
       //send password reset email via Brevo
       await sendBrevoEmail(user.email, "Password Reset Request", `You requested a password reset. Click this link to reset your password: ${resetLink}`,
@@ -76,42 +50,10 @@ exports.requestReset = async (req, res) => {
         msg: "Reset link generated but email delivery failed. Check server console for the link.",
       });
     }
-/*try {
-  const info = await transporter.sendMail(mailOptions);
-  console.log("Email sent:", info.response || info.messageId);
-  return res.json({ msg: "Reset link sent to email." });
-} catch (sendErr) {
-  console.error("Error sending email:", sendErr);
-  console.log("Fallback reset link:", resetLink);
-  return res.status(202).json({
-    msg: "Reset link generated but email delivery failed. Check server console for the link.",
-  });
-}*/
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-
-    //console.log(`📩 Simulated email: ${resetLink}`);
-   // res.json({ msg: "Reset link generated. Check console log for link." });
-// ...existing code...
 };
-
-/*async function sendResetEmail(user, resetLink) {
-  const msg = {
-    to:user.email,
-    from: process.env.EMAIL_FROM,
-    subject: "Password Reset Request",
-    text: `Click this link to reset your password: ${resetLink} 
-      If you didn't request this, please ignore this email.`,
-  };
-  try {
-    await sgMail.send(msg);
-    console.log("Password reset email sent to:", user.email);
-  } catch (error) {
-    console.error("Error sending password reset email:", error);
-    throw error;
-  }
-}*/
 
 // Reset password
 exports.resetPassword = async (req, res) => {
