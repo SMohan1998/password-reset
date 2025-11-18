@@ -19,7 +19,7 @@ function RequestReset() {
 
       const data = await response.json();
       if (response.ok) {
-        setMessage("Reset link generated! Check backend console for the link.");
+        setMessage("Reset link generated and sent to your registered email.");
       } else {
         setMessage(data.message || "Something went wrong.");
       }
