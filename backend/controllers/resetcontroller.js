@@ -1,8 +1,26 @@
-const nodemailer = require("nodemailer");
+//const nodemailer = require("nodemailer");
 //const sgMail = require('@sendgrid/mail');
 //sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const { v4: uuidv4 } = require("uuid");
 const User = require("../models/user");
+const axios = require("axios");
+
+//helper function to send Brevo email
+async function sendBrevoEmail(recipient, subject, textContent, htmlContent) {
+  const apiKey = process.env.BREVO_API_KEY;
+  await axios.post('https://api.brevo.com/v3/smtp/email', {
+    sender: { name: "Password Reset", email: process.env.EMAIL_FROM },
+    to: [{ email: recipient }],
+    subject: subject,
+    textContent: textContent,
+    htmlContent: htmlContent
+  }, {
+    headers: {
+      'api-key': apiKey,
+      'Content-Type': 'application/json'
+    }
+  });
+}
 
 // Request reset link
 exports.requestReset = async (req, res) => {
@@ -28,7 +46,7 @@ exports.requestReset = async (req, res) => {
     const clientBase = process.env.CLIENT_URL || "https://pwd-reset.netlify.app";
     // APP ROUTE (query param), not a source file path
     const resetLink = `${clientBase}/reset-password/${token}`;
-    const transporter = nodemailer.createTransport({
+    /*const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
       secure: false,
@@ -44,17 +62,21 @@ exports.requestReset = async (req, res) => {
       text: `You requested a password reset. Click this link to reset your password: ${resetLink} 
       If you didn't request this, please ignore this email.`,
     };
+    */
     try{
-      await transporter.verify()
+      //send password reset email via Brevo
+      await sendBrevoEmail(user.email, "Password Reset Request", `You requested a password reset. Click this link to reset your password: ${resetLink}`,
+        `<p>If you didn't request this, please ignore this email.</p>`);
+        return res.json({ msg: "Reset link sent to email." });
     }
     catch(verifyErr){
-      console.error("SMTP verify failed", verifyErr);
+      console.error("Error Sending Email", verifyErr);
        console.log("Fallback reset link:", resetLink);
       return res.status(202).json({
         msg: "Reset link generated but email delivery failed. Check server console for the link.",
       });
     }
-try {
+/*try {
   const info = await transporter.sendMail(mailOptions);
   console.log("Email sent:", info.response || info.messageId);
   return res.json({ msg: "Reset link sent to email." });
@@ -64,7 +86,7 @@ try {
   return res.status(202).json({
     msg: "Reset link generated but email delivery failed. Check server console for the link.",
   });
-}
+}*/
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
